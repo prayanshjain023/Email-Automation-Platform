@@ -1,10 +1,3 @@
-/**
- * Utility functions for handling React Flow data
- */
-
-/**
- * Cleans node data by removing UI-specific properties that shouldn't be sent to the backend
- */
 export function cleanNodeData(node) {
     // Create a base cleaned node with common properties
     const cleanedNode = {
