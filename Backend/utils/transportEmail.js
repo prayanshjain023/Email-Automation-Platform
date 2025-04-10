@@ -8,12 +8,20 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-const transportMail = async ({ to, subject, body }) => {
+transporter.verify(function (error, success) {
+  if (error) {
+    console.error("Email Transport Error:", error);
+  } else {
+    console.log("Server is ready to take emails 🚀");
+  }
+});
+
+const transportMail = async ({ to, subject, html }) => {
   await transporter.sendMail({
     from: `"FlowMail" <${process.env.MAIL_USER}>`,
     to,
     subject,
-    html: body
+    html
   });
 };
 

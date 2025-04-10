@@ -91,73 +91,68 @@ const deleteFlow = async (req, res) => {
 };
 
 const runFlow = async (req, res) => {
-  const { flowId, leadEmail } = req.body;
+  const { flowId, recipientEmail } = req.body;
   const userId = req.user._id;
-    try {
-      if (!leadEmail) {
-        return res
-          .status(400)
-          .json({ success: false, message: "Lead email is required" });
-      }
-  
-      if (!flowId) {
-        return res
-          .status(400)
-          .json({ success: false, message: "Flow ID is required" });
-      }
-      const flow = await EmailFlow.findOne({ _id: flowId, userId });
 
-      if (!flow) {
-        return res
-          .status(404)
-          .json({ success: false, message: "Flow not found" });
-      }
-
-      const { nodes } = flow;
-
-      let delayInMinutes = 0;
-
-      // Go through the nodes and find Cold Email + Wait/Delay nodes
-      for (const node of nodes) {
-        if (node.type === "delayNode") {
-          delayInMinutes += Number(node.data.delay) || 0; // in minutes
-        }
-
-        if (node.type === "emailNode") {
-          const templateId = node.data.templateId;
-
-          const template = await EmailTemplate.findOne({
-            _id: templateId,
-            userId,
-          });
-
-          if (!template) {
-            console.warn(`Template not found for ID: ${templateId}`);
-            continue;
-          }
-
-          const scheduledTime = new Date(
-            Date.now() + delayInMinutes * 60 * 1000
-          );
-
-          await scheduleEmail({
-            userId,
-            flowId,
-            templateId,
-            sendTo: leadEmail,
-            scheduledTime,
-          });
-        }
-      }
-
-      res
-        .status(200)
-        .json({ success: true, message: "Emails scheduled successfully" });
-    } catch (error) {
-      console.error("Error running flow:", error);
-      res.status(500).json({ success: false, message: "Server Error" });
+  try {
+    if (!recipientEmail) {
+      return res.status(400).json({ success: false, message: "Lead email is required" });
     }
-}
+
+    if (!flowId) {
+      return res.status(400).json({ success: false, message: "Flow ID is required" });
+    }
+
+    const flow = await EmailFlow.findOne({ _id: flowId, userId });
+
+    if (!flow) {
+      return res.status(404).json({ success: false, message: "Flow not found" });
+    }
+
+    const { nodes } = flow;
+
+
+    let delayInMinutes = 0;
+
+    for (const node of nodes) {
+      if (node.type === "delayNode") {
+        delayInMinutes += Number(node.data.delay) || 0;
+      }
+
+      if (node.type === "emailNode") {
+        const templateId = node.data.selectedTemplate;
+
+        const template = await EmailTemplate.findOne({
+          _id: templateId,
+          userId,
+        });
+
+        if (!template) {
+          console.warn(`Template not found for ID: ${templateId}`);
+          continue;
+        }
+
+        const scheduledTime = new Date(Date.now() + delayInMinutes * 60 * 1000);
+
+        await scheduleEmail({
+          userId,
+          flowId,
+          templateId,
+          sendTo: recipientEmail,
+          sendTime: scheduledTime, // ✅ CORRECT field name
+        })
+        
+        
+      }
+    }
+
+    res.status(200).json({ success: true, message: "Emails scheduled successfully" });
+  } catch (error) {
+    console.error("Error running flow:", error);
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
 
 module.exports = {
   createFlow,

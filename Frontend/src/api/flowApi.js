@@ -39,7 +39,7 @@ export async function updateFlow(id, flowData) {
 
 export async function deleteFlow(id) {
   try {
-    const response = await axios.delete(`${API_URL}/flows/delete${id}`)
+    const response = await axios.delete(`${API_URL}/flows/delete/${id}`)
     return response.data
   } catch (error) {
     handleApiError(error)
@@ -47,6 +47,7 @@ export async function deleteFlow(id) {
 }
 
 export async function runFlow(flowId, recipientEmail) {
+  
   try {
     const response = await axios.post(`${API_URL}/flows/runflow`, {
       flowId,

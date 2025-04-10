@@ -1,4 +1,5 @@
-import React,{ useEffect, useState } from "react"
+import React from "react";
+import { useEffect, useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { getFlows, getFlow, runFlow } from "../../api/flowApi"
 
@@ -187,8 +188,7 @@ function RunFlowPage() {
                 <div>
                   <h3 className="font-medium mb-2">Selected Flow: {selectedFlow.title}</h3>
                   <p className="text-sm text-gray-600 mb-4">
-                    This flow contains {selectedFlow.nodes.length} email{selectedFlow.nodes.length !== 1 ? "s" : ""}{" "}
-                    that will be sent in sequence.
+                  This flow contains {selectedFlow.nodes?.length || 0} email{(selectedFlow.nodes?.length || 0) !== 1 ? "s" : ""} that will be sent in sequence.
                   </p>
                 </div>
 

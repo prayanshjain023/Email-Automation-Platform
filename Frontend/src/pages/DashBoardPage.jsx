@@ -240,24 +240,6 @@ if (error) {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
-          <div className="space-y-4">
-            {/* This would be populated with actual data from your API */}
-            <div className="border-l-4 border-green-500 pl-4 py-1">
-              <p className="font-medium">Flow "Welcome Sequence" executed</p>
-              <p className="text-sm text-gray-600">Today at 10:45 AM</p>
-            </div>
-            <div className="border-l-4 border-blue-500 pl-4 py-1">
-              <p className="font-medium">Template "Product Update" created</p>
-              <p className="text-sm text-gray-600">Yesterday at 2:30 PM</p>
-            </div>
-            <div className="border-l-4 border-purple-500 pl-4 py-1">
-              <p className="font-medium">Flow "Onboarding" modified</p>
-              <p className="text-sm text-gray-600">Apr 5, 2023</p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   )
