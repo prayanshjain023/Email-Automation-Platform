@@ -1,32 +1,27 @@
-const express = require("express");
-const router = express.Router();
-const { body } = require("express-validator");
-const { register, login, getUserProfile, logout } = require("../controllers/userController");
-const { authUser } = require("../middleware/auth");
+// Import necessary modules
+const express = require("express"); // Express framework to handle routing
+const router = express.Router(); // Create a new router instance
+const { body } = require("express-validator"); // For input validation
+const { register, login, getUserProfile, logout } = require("../controllers/userController"); // Import the controller functions for user actions
+const { authUser } = require("../middleware/auth"); // Import the user authentication middleware
 
-router.post(
-  "/register",
-  [
-    body("email").isEmail().withMessage("Invalid email format"),
-    body("fullName.firstName")
-      .isLength({ min: 3 })
-      .withMessage("First name must be at least 3 characters long"),
-    body("fullName.lastName")
-      .isLength({ min: 3 })
-      .withMessage("Last name must be at least 3 characters long"),
-    body("password")
-      .isLength({ min: 8 })
-      .withMessage("Password must be at least 8 characters long"),
-  ],
-  register
-);
+// Route to register a new user
+// Handles POST requests to /register
+router.post("/register", register); // Register controller is invoked when a POST request is made to this route
 
-router.post("/login",[
-  body("email").isEmail().withMessage("Invalid email format"),
-  body("password").isLength({ min: 8 }).withMessage("Password must be at least 8 characters long"),
-], login);
+// Route to login a user
+// Handles POST requests to /login
+router.post("/login", login); // Login controller is invoked when a POST request is made to this route
 
-router.get("/profile", authUser, getUserProfile);
-router.get("/logout", authUser, logout);
+// Route to get the user profile
+// Handles GET requests to /profile
+// This route is protected by the authUser middleware, which ensures that only authenticated users can access their profile
+router.get("/profile", authUser, getUserProfile); // Profile controller is invoked when a GET request is made to this route
 
+// Route to logout the user
+// Handles GET requests to /logout
+// This route is also protected by the authUser middleware to ensure the user is logged in before logging out
+router.get("/logout", authUser, logout); // Logout controller is invoked when a GET request is made to this route
+
+// Export the router to use in the main application
 module.exports = router;
